@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from django.utils import unittest
-from django.test import TestCase
-from .parse_util import parse_string_blocks, replace_blocks, replace_string_blocks
+import unittest
+from .parse_util import parse_string_blocks, replace_string_blocks
 
 
-test_extraction_string =  """{% block test %}tr
+test_extraction_string = """{% block test %}tr
  st
 
  sdf{% endblock %}"""
@@ -22,7 +21,7 @@ test_extraction_string4 = """{% extends "emails/email.html" %}\n{% load gidsy_ta
 test_replace_string = """<html>{% block test123 %}{% endblock %}</html>"""
 
 
-class BlockExtraction(TestCase):
+class BlockExtraction(unittest.TestCase):
     def test_extraction(self):
         self.assertEquals("""tr
  st
@@ -45,6 +44,6 @@ class BlockExtraction(TestCase):
         self.assertTrue(data.get("email_subtitle", False))
         self.assertTrue(data.get("signature", False))
         self.assertTrue(data.get("title", False))
-                
+
     def test_replace_blocks(self):
         self.assertEqual("<html>test</html>", replace_string_blocks(test_replace_string, {"test123": "test"}))

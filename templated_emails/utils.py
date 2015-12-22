@@ -8,11 +8,8 @@ from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
 
 
-use_pynliner = getattr(settings, 'TEMPLATEDEMAILS_USE_PYNLINER', False)
-use_threading = getattr(settings, 'TEMPLATEDEMAILS_USE_THREADING', True)
-
 pynliner = None
-if use_pynliner:
+if getattr(settings, 'TEMPLATEDEMAILS_USE_PYNLINER', False):
     import pynliner
 
 
@@ -25,20 +22,19 @@ def send_templated_email(recipients, template_path, context=None,
         user's language.
     """
 
-    if use_threading:
-        kwargs = {
-            "recipients": recipients,
-            "template_path": template_path,
-            "extra_context": context,
-            "from_email": from_email,
-            "fail_silently": fail_silently,
-            "extra_headers": extra_headers
-        }
+    kwargs = {
+        "recipients": recipients,
+        "template_path": template_path,
+        "extra_context": context,
+        "from_email": from_email,
+        "fail_silently": fail_silently,
+        "extra_headers": extra_headers
+    }
 
-        if use_threading:
-            threading.Thread(target=_send_all, kwargs=kwargs).start()
-        else:
-            _send_all(**kwargs)
+    if getattr(settings, 'TEMPLATEDEMAILS_USE_THREADING', True):
+        threading.Thread(target=_send_all, kwargs=kwargs).start()
+    else:
+        _send_all(**kwargs)
 
 
 def _send_all(recipients, **kwargs):

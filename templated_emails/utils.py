@@ -3,7 +3,7 @@ import threading
 
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
-from django.template import Context, TemplateDoesNotExist
+from django.template import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
 
@@ -45,7 +45,7 @@ def _send_all(recipients, **kwargs):
 def _send_single(recipient, template_path, extra_context, from_email,
                  fail_silently, extra_headers):
 
-    context = Context()
+    context = {}
     context.update(extra_context)
     context["STATIC_URL"] = settings.STATIC_URL
     context["recipient"] = recipient
